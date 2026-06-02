@@ -1,7 +1,7 @@
 package com.minoo.taskmanager.controller;
 
 import com.minoo.taskmanager.entity.User;
-import com.minoo.taskmanager.repository.UserRepository;
+import com.minoo.taskmanager.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,22 +9,23 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
-public class UserController{
-    private final UserRepository userRepository;
+public class UserController {
 
-    public UserController(UserRepository userRepository){
-        this.userRepository = userRepository;
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping
-    public ResponseEntity<List<User>>getAllUsers(){
-        List<User> users = userRepository.findAll();
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
     }
+
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user){
-        User savedUser = userRepository.save(user);
+    public ResponseEntity<User> createUser(@RequestBody User user) {
+        User savedUser = userService.createUser(user);
         return ResponseEntity.status(201).body(savedUser);
     }
-
 }
