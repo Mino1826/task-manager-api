@@ -1,7 +1,9 @@
 package com.minoo.taskmanager.controller;
 
 import com.minoo.taskmanager.dto.TaskDto;
+import com.minoo.taskmanager.dto.TaskResponseDto;
 import com.minoo.taskmanager.entity.Task;
+import com.minoo.taskmanager.mapper.TaskMapper;
 import com.minoo.taskmanager.service.TaskService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -20,39 +22,55 @@ public class TaskController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Task>> getAllTasks() {
+    public ResponseEntity<List<TaskResponseDto>> getAllTasks() {
         List<Task> tasks = taskService.getAllTasks();
-        return ResponseEntity.ok(tasks);
+
+        List<TaskResponseDto> response = tasks.stream()
+                .map(TaskMapper::mapToTaskResponseDto)
+                .toList();
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Task> getTaskById(@PathVariable Long id) {
+    public ResponseEntity<TaskResponseDto> getTaskById(@PathVariable Long id) {
         Task task = taskService.getTaskById(id);
-        return ResponseEntity.ok(task);
+        TaskResponseDto response = TaskMapper.mapToTaskResponseDto(task);
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/users/{userId}")
-    public ResponseEntity<List<Task>> getTasksByUserId(@PathVariable Long userId) {
+    public ResponseEntity<List<TaskResponseDto>> getTasksByUserId(@PathVariable Long userId) {
         List<Task> tasks = taskService.getTasksByUserId(userId);
-        return ResponseEntity.ok(tasks);
+
+        List<TaskResponseDto> response = tasks.stream()
+                .map(TaskMapper::mapToTaskResponseDto)
+                .toList();
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/users/{userId}")
-    public ResponseEntity<Task> createTask(
+    public ResponseEntity<TaskResponseDto> createTask(
             @PathVariable Long userId,
             @Valid @RequestBody TaskDto taskDto
     ) {
         Task savedTask = taskService.createTask(userId, taskDto);
-        return ResponseEntity.status(201).body(savedTask);
+        TaskResponseDto response = TaskMapper.mapToTaskResponseDto(savedTask);
+
+        return ResponseEntity.status(201).body(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Task> updateTask(
+    public ResponseEntity<TaskResponseDto> updateTask(
             @PathVariable Long id,
             @Valid @RequestBody TaskDto taskDto
     ) {
         Task updatedTask = taskService.updateTask(id, taskDto);
-        return ResponseEntity.ok(updatedTask);
+        TaskResponseDto response = TaskMapper.mapToTaskResponseDto(updatedTask);
+
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")

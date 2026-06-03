@@ -1,7 +1,9 @@
 package com.minoo.taskmanager.controller;
 
 import com.minoo.taskmanager.dto.UserDto;
+import com.minoo.taskmanager.dto.UserResponseDto;
 import com.minoo.taskmanager.entity.User;
+import com.minoo.taskmanager.mapper.UserMapper;
 import com.minoo.taskmanager.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -20,30 +22,41 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
+    public ResponseEntity<List<UserResponseDto>> getAllUsers() {
         List<User> users = userService.getAllUsers();
-        return ResponseEntity.ok(users);
+
+        List<UserResponseDto> response = users.stream()
+                .map(UserMapper::mapToUserResponseDto)
+                .toList();
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+    public ResponseEntity<UserResponseDto> getUserById(@PathVariable Long id) {
         User user = userService.getUserById(id);
-        return ResponseEntity.ok(user);
+        UserResponseDto response = UserMapper.mapToUserResponseDto(user);
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@Valid @RequestBody UserDto userDto) {
+    public ResponseEntity<UserResponseDto> createUser(@Valid @RequestBody UserDto userDto) {
         User savedUser = userService.createUser(userDto);
-        return ResponseEntity.status(201).body(savedUser);
+        UserResponseDto response = UserMapper.mapToUserResponseDto(savedUser);
+
+        return ResponseEntity.status(201).body(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(
+    public ResponseEntity<UserResponseDto> updateUser(
             @PathVariable Long id,
             @Valid @RequestBody UserDto userDto
     ) {
         User updatedUser = userService.updateUser(id, userDto);
-        return ResponseEntity.ok(updatedUser);
+        UserResponseDto response = UserMapper.mapToUserResponseDto(updatedUser);
+
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
