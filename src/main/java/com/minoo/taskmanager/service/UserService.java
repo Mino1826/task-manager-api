@@ -38,4 +38,18 @@ public class UserService {
 
         return userRepository.save(user);
     }
+
+    public User updateUser(Long id, UserDto userDto) {
+        User user = getUserById(id);
+
+        user.setName(userDto.getName());
+        user.setEmail(userDto.getEmail());
+
+        return userRepository.save(user);
+    }
+
+    public void deleteUser(Long id) {
+        User user = getUserById(id);
+        userRepository.delete(user);
+    }
 }
