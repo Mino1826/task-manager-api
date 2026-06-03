@@ -1,7 +1,9 @@
 package com.minoo.taskmanager.controller;
 
+import com.minoo.taskmanager.dto.UserDto;
 import com.minoo.taskmanager.entity.User;
 import com.minoo.taskmanager.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,8 +26,8 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        User savedUser = userService.createUser(user);
+    public ResponseEntity<User> createUser(@Valid @RequestBody UserDto userDto) {
+        User savedUser = userService.createUser(userDto);
         return ResponseEntity.status(201).body(savedUser);
     }
 }
