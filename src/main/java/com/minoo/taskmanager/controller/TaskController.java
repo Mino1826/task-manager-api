@@ -25,6 +25,12 @@ public class TaskController {
         return ResponseEntity.ok(tasks);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Task> getTaskById(@PathVariable Long id) {
+        Task task = taskService.getTaskById(id);
+        return ResponseEntity.ok(task);
+    }
+
     @GetMapping("/users/{userId}")
     public ResponseEntity<List<Task>> getTasksByUserId(@PathVariable Long userId) {
         List<Task> tasks = taskService.getTasksByUserId(userId);
@@ -38,5 +44,20 @@ public class TaskController {
     ) {
         Task savedTask = taskService.createTask(userId, taskDto);
         return ResponseEntity.status(201).body(savedTask);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Task> updateTask(
+            @PathVariable Long id,
+            @Valid @RequestBody TaskDto taskDto
+    ) {
+        Task updatedTask = taskService.updateTask(id, taskDto);
+        return ResponseEntity.ok(updatedTask);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
+        taskService.deleteTask(id);
+        return ResponseEntity.noContent().build();
     }
 }

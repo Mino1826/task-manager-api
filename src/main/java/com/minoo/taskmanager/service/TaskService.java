@@ -3,6 +3,7 @@ package com.minoo.taskmanager.service;
 import com.minoo.taskmanager.dto.TaskDto;
 import com.minoo.taskmanager.entity.Task;
 import com.minoo.taskmanager.entity.User;
+import com.minoo.taskmanager.exception.ResourceNotFoundException;
 import com.minoo.taskmanager.repository.TaskRepository;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,11 @@ public class TaskService {
         return taskRepository.findAll();
     }
 
+    public Task getTaskById(Long id) {
+        return taskRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
+    }
+
     public List<Task> getTasksByUserId(Long userId) {
         userService.getUserById(userId);
         return taskRepository.findByUserId(userId);
@@ -39,5 +45,21 @@ public class TaskService {
         task.setUser(user);
 
         return taskRepository.save(task);
+    }
+
+    public Task updateTask(Long id, TaskDto taskDto) {
+        Task task = getTaskById(id);
+
+        task.setTitle(taskDto.getTitle());
+        task.setDescription(taskDto.getDescription());
+        task.setStatus(taskDto.getStatus());
+        task.setDueDate(taskDto.getDueDate());
+
+        return taskRepository.save(task);
+    }
+
+    public void deleteTask(Long id) {
+        Task task = getTaskById(id);
+        taskRepository.delete(task);
     }
 }
