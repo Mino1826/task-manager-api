@@ -3,6 +3,7 @@ package com.minoo.taskmanager.controller;
 import com.minoo.taskmanager.dto.TaskDto;
 import com.minoo.taskmanager.dto.TaskResponseDto;
 import com.minoo.taskmanager.entity.Task;
+import com.minoo.taskmanager.entity.TaskStatus;
 import com.minoo.taskmanager.mapper.TaskMapper;
 import com.minoo.taskmanager.service.TaskService;
 import jakarta.validation.Valid;
@@ -43,6 +44,17 @@ public class TaskController {
         Page<Task> tasks = taskService.getTasksPagedAndSorted(page, size, sortBy, direction);
 
         Page<TaskResponseDto> response = tasks.map(TaskMapper::mapToTaskResponseDto);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/status/{status}")
+    public ResponseEntity<List<TaskResponseDto>> getTasksByStatus(@PathVariable TaskStatus status) {
+        List<Task> tasks = taskService.getTasksByStatus(status);
+
+        List<TaskResponseDto> response = tasks.stream()
+                .map(TaskMapper::mapToTaskResponseDto)
+                .toList();
 
         return ResponseEntity.ok(response);
     }

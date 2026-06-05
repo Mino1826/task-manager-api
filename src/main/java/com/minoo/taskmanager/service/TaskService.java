@@ -2,6 +2,7 @@ package com.minoo.taskmanager.service;
 
 import com.minoo.taskmanager.dto.TaskDto;
 import com.minoo.taskmanager.entity.Task;
+import com.minoo.taskmanager.entity.TaskStatus;
 import com.minoo.taskmanager.entity.User;
 import com.minoo.taskmanager.exception.ResourceNotFoundException;
 import com.minoo.taskmanager.repository.TaskRepository;
@@ -40,6 +41,10 @@ public class TaskService {
         Pageable pageable = PageRequest.of(page, size, sort);
 
         return taskRepository.findAll(pageable);
+    }
+
+    public List<Task> getTasksByStatus(TaskStatus status) {
+        return taskRepository.findByStatus(status);
     }
 
     public Task getTaskById(Long id) {
