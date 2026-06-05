@@ -178,3 +178,13 @@ GET /api/tasks/paged?page=0&size=5&sortBy=dueDate&direction=asc
 - Validation and exception handling
 - Transaction management
 - Git and GitHub workflow
+
+## Future Improvements
+
+- Add JWT authentication and authorization
+- Add user login and registration
+- Replace H2 database with PostgreSQL or MySQL
+- Add unit tests for service layer
+- Add integration tests for API endpoints
+- Add Docker support
+- Add Swagger/OpenAPI documentation
