@@ -6,6 +6,7 @@ import com.minoo.taskmanager.exception.DuplicateResourceException;
 import com.minoo.taskmanager.exception.ResourceNotFoundException;
 import com.minoo.taskmanager.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,15 +19,18 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    @Transactional(readOnly = true)
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public User getUserById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
+    @Transactional
     public User createUser(UserDto userDto) {
         if (userRepository.existsByEmail(userDto.getEmail())) {
             throw new DuplicateResourceException("Email already exists");
@@ -39,6 +43,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    @Transactional
     public User updateUser(Long id, UserDto userDto) {
         User user = getUserById(id);
 
@@ -48,6 +53,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    @Transactional
     public void deleteUser(Long id) {
         User user = getUserById(id);
         userRepository.delete(user);

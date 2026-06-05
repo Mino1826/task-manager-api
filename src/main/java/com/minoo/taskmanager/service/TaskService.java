@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -25,10 +26,12 @@ public class TaskService {
         this.userService = userService;
     }
 
+    @Transactional(readOnly = true)
     public List<Task> getAllTasks() {
         return taskRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public Page<Task> getTasksPagedAndSorted(int page, int size, String sortBy, String direction) {
         Sort sort;
 
@@ -43,20 +46,24 @@ public class TaskService {
         return taskRepository.findAll(pageable);
     }
 
+    @Transactional(readOnly = true)
     public List<Task> getTasksByStatus(TaskStatus status) {
         return taskRepository.findByStatus(status);
     }
 
+    @Transactional(readOnly = true)
     public Task getTaskById(Long id) {
         return taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
     }
 
+    @Transactional(readOnly = true)
     public List<Task> getTasksByUserId(Long userId) {
         userService.getUserById(userId);
         return taskRepository.findByUserId(userId);
     }
 
+    @Transactional
     public Task createTask(Long userId, TaskDto taskDto) {
         User user = userService.getUserById(userId);
 
@@ -70,6 +77,7 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
+    @Transactional
     public Task updateTask(Long id, TaskDto taskDto) {
         Task task = getTaskById(id);
 
@@ -81,6 +89,7 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
+    @Transactional
     public void deleteTask(Long id) {
         Task task = getTaskById(id);
         taskRepository.delete(task);
