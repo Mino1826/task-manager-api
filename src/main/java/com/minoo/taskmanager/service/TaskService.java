@@ -5,6 +5,10 @@ import com.minoo.taskmanager.entity.Task;
 import com.minoo.taskmanager.entity.User;
 import com.minoo.taskmanager.exception.ResourceNotFoundException;
 import com.minoo.taskmanager.repository.TaskRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,6 +26,20 @@ public class TaskService {
 
     public List<Task> getAllTasks() {
         return taskRepository.findAll();
+    }
+
+    public Page<Task> getTasksPagedAndSorted(int page, int size, String sortBy, String direction) {
+        Sort sort;
+
+        if (direction.equalsIgnoreCase("desc")) {
+            sort = Sort.by(sortBy).descending();
+        } else {
+            sort = Sort.by(sortBy).ascending();
+        }
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        return taskRepository.findAll(pageable);
     }
 
     public Task getTaskById(Long id) {

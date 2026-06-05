@@ -6,6 +6,7 @@ import com.minoo.taskmanager.entity.Task;
 import com.minoo.taskmanager.mapper.TaskMapper;
 import com.minoo.taskmanager.service.TaskService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +29,20 @@ public class TaskController {
         List<TaskResponseDto> response = tasks.stream()
                 .map(TaskMapper::mapToTaskResponseDto)
                 .toList();
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/paged")
+    public ResponseEntity<Page<TaskResponseDto>> getTasksPagedAndSorted(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction
+    ) {
+        Page<Task> tasks = taskService.getTasksPagedAndSorted(page, size, sortBy, direction);
+
+        Page<TaskResponseDto> response = tasks.map(TaskMapper::mapToTaskResponseDto);
 
         return ResponseEntity.ok(response);
     }
