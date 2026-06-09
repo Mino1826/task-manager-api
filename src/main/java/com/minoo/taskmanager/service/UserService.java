@@ -39,6 +39,7 @@ public class UserService {
         User user = new User();
         user.setName(userDto.getName());
         user.setEmail(userDto.getEmail());
+        user.setPassword(userDto.getPassword());
 
         return userRepository.save(user);
     }
@@ -49,6 +50,7 @@ public class UserService {
 
         user.setName(userDto.getName());
         user.setEmail(userDto.getEmail());
+        user.setPassword(userDto.getPassword());
 
         return userRepository.save(user);
     }
